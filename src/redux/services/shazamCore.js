@@ -12,12 +12,14 @@ export const shazamCoreApi = createApi({
   // добавляем необходимый поинт
   endpoints: (builder) => ({
     getTopCharts: builder.query({query: () => '/v1/charts/world'}),
-    getArtistDetails: builder.query({ query: (artistId) => `v2/artists/details?artist_id=${artistId}` }),
+    getSongDetails: builder.query({query: ( songid ) => `/v1/tracks/details?track_id=${songid}`}),
+    getArtistDetails: builder.query({ query: (artistId) => `/v2/artists/details?artist_id=${artistId}` }),
   })
 })
 
 // экспортируем заданные поинты как хуки
 export const {
   useGetTopChartsQuery,
-  useGetArtistsDetail,
+  useGetSongDetailsQuery,
+  useGetArtistsDetailQuery,
 } = shazamCoreApi

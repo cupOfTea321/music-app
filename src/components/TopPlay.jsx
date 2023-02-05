@@ -10,8 +10,22 @@ import { Link } from 'react-router-dom';
 import { FreeMode } from 'swiper';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
+import Loader from './Loader';
+import PlayPause from './PlayPause';
 
-const TopChartCard = ({song, i}) => {
+const TopChartCard = ({song, i, activeSong, handlePauseClick, handlePlayClick, isPlaying}) => {
+
+  // в 1 одном из 5 приходит undefined при обращении song?.artists[0]?.adamid
+  if (!song) return <Loader title={'Loading songs...'}/>
+  // let artistLink = [];
+  // if (song.artists) return  artistLink = song?.artists;
+  // console.log(artistLink);
+
+  // if (song?.artists[0] === undefined){
+  //   let artistLink = `/artists`
+  // } else {
+  //   let artistLink = `/artists/${song?.artists}`
+  // }
   return(
     <div className={`w-full flex flex-row items-center hover:bg-[#4c426e] py-2 p-4 
     rounded-lg cursor-pointer mb-2`}>
@@ -22,8 +36,18 @@ const TopChartCard = ({song, i}) => {
           <Link to={`/songs/${song.key}`}>
             <p className={`text-xl font-bold text-white`}>{song?.title}</p>
           </Link>
+          <Link  to={`/artists/${song?.artists}`}>
+            <p className={`text-ase text-gray-300 mt-1`}>{song?.subtitle}</p>
+          </Link>
         </div>
       </div>
+      <PlayPause
+        isPlaying={isPlaying}
+        activeSong={activeSong}
+        song={song}
+        handlePause={handlePauseClick}
+        handlePlay={handlePlayClick}
+      />
     </div>
   )
 }
@@ -37,11 +61,11 @@ const TopPlay = () => {
   useEffect(() => {
     divRef.current.scrollIntoView({behavior: 'smooth'})
   })
-  const topPlays = data?.slice(0, 5)
+  const topPlays = data?.slice(5, 10)
   const handlePauseClick = () => {
     dispatch(playPause(false))
   }
-  const handlePlayClick = () => {
+  const handlePlayClick = (song, i) => {
     dispatch(setActiveSong({song, data, i}))
     dispatch(playPause(true))
   }
@@ -58,7 +82,8 @@ const TopPlay = () => {
 
         <div className={`mt-4 flex flex-col gap-1`}>
           {topPlays?.map((song, i) => (
-            <TopChartCard key={song.key} song={song} i={i}/>
+            <TopChartCard key={song.key} song={song} i={i} isPlaying={isPlaying} activeSong={activeSong}
+                          handlePauseClick={handlePauseClick} handlePlayClick={() => handlePlayClick(song, i)}/>
           ))}
         </div>
       </div>
@@ -80,7 +105,7 @@ const TopPlay = () => {
           modules={[FreeMode]}
           className="mt-4"
         >
-          {topPlays?.slice(0, 5).map((artist) => (
+          {topPlays?.slice(0, 6).map((artist) => (
             <SwiperSlide
               key={artist?.key}
               style={{ width: '25%', height: 'auto' }}
