@@ -58,7 +58,7 @@ const TopPlay = () => {
   const {data} = useGetTopChartsQuery()
   const {data2} = useGetArtistDetailsQuery()
 
-  const topPlays = data?.slice(5, 10)
+  const topPlays = data?.slice(0, 5)
 
   const divRef = useRef(null)
 
